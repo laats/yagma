@@ -1,0 +1,9 @@
+include MANIFEST.in
+include MANIFEST.template
+include Makefile
+include yagma.deps
+include yagma.html
+include yagma.png
+include html4css1.css
+include voidspace.css
+include sedman.sed
