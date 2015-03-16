@@ -6,7 +6,7 @@
 # Description:  The documentation of the yagma module
 # Author:       Staal Vinterbo
 # Created:      Thu Jul 14 14:59:17 2011
-# Modified:     Wed Apr  4 21:41:53 2012 (Staal Vinterbo) staal@mats
+# Modified:     Fri May  9 14:27:36 2014 (Staal Vinterbo) staal@dink
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -1664,7 +1664,7 @@ References
 module = 'yagma'
 script = 'yagm.py'
 url = "http://ptg.ucsd.edu/~staal/yagma/"
-version = '1.23'
+version = '1.24'
 
 docstring = __doc__ % {'prog': module, 'script' : script,
                                'url': url, 'version' : version }
