@@ -6,7 +6,7 @@
 * Description:  
 * Author:       Staal Vinterbo
 * Created:      Sat Nov  5 17:27:44 2011
-* Modified:     Tue Nov 15 17:01:44 2011 (Staal Vinterbo) staal@dink
+* Modified:     Sat Oct 10 18:30:51 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 * Language:     caml
 * Package:      N/A
 * Status:       Experimental
@@ -27,6 +27,12 @@
 *
 * (c) Copyright 2011, Staal Vinterbo, all rights reserved.
 *
+********************************************************************************
+*
+* Revisions:
+*
+* Sat Oct 10 18:30:37 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
+*  Batteries syntax changed: -| to %
 ********************************************************************************
 *)
 
@@ -72,7 +78,7 @@ and parse_nodelist = parser
 and parse_tail = parser
   | [< 'Kwd "," ; node = parse_tree; rest = parse_tail >] -> node::rest
   | [< >] -> [];;
-let tree_from_string = parse_tree -| lexer -| Stream.of_string;;
+let tree_from_string = parse_tree % lexer % Stream.of_string;;
 
 (** color coding stack operations: lets us access next edge parent in constant time *)
 

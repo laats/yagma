@@ -6,7 +6,7 @@
 # Description:  Color Coding based graph matching in simple attributed graphs
 # Author:       Staal Vinterbo
 # Created:      Sun Jul 17 15:46:11 2011
-# Modified:     Mon Dec 19 17:36:16 2011 (Staal Vinterbo) staal@dink
+# Modified:     Mon Oct 26 17:53:44 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      yagma
 # Status:       Experimental
@@ -68,6 +68,7 @@ def findroot(T):
     assert(len(T) > 0)
     l = sorted(T.in_degree_iter(), key=lambda (n,d): d)
     (root, deg) = l[0]
+    debug('findroot l[0] ' + str(l[0]))
     assert(deg == 0)
     assert(len(l) > 1 and l[1][1] > 0)
     debug('findroot -> ' + str((root, deg)))
@@ -277,10 +278,32 @@ class GraphMatch:
         self.G1, self.G2, self.eps, self.v, self.w = G1, G2, eps, v, w
         self.m, self.n = len(G1), len(G2)
         self.quickbound, self.k = quickbound, k
-        self.check = lambda T, G, a : (sum(v(T.node[i], G.node[a[i]]) for i in T if a[i] in G)
-                                          +
-                                          sum(w(d, G[a[i]][a[j]]) for i,j,d in T.edges(data=True) if
-                                              a[i] in G and a[j] in G[a[i]]))
+        self.check__ = lambda T, G, a : (
+            sum(v(T.node[i], G.node[a[i]]) for i in T if a[i] in G)
+            +
+            sum(w(d, G[a[i]][a[j]]) for i,j,d in T.edges(data=True) if
+                a[i] in G and a[j] in G[a[i]]))
+
+    def check(self, T, G, a):
+        #print 'a', a
+        return (sum(self.v(T.node[i], G.node[a[i]]) for i in T if a[i] in G)
+                +
+                sum(self.w(d, G[a[i]][a[j]]) for i,j,d in T.edges(data=True) if
+                a[i] in G and a[j] in G[a[i]]))
+
+    def check2(self, T, G, a):
+        node_vals = defaultdict(lambda : 0,
+                [(i, self.v(T.node[i], G.node[a[i]])) for i in T if a[i] in G])
+        edge_val_sum = defaultdict(lambda : 0)
+        edge_scores = [(i,j, self.w(d, G[a[i]][a[j]])) for i,j,d in T.edges(data=True) if a[i] in G and a[j] in G[a[i]]]
+        for (i,j,val) in edge_scores:
+            edge_val_sum[i] += val
+            edge_val_sum[j] += val
+        value = defaultdict(lambda : 0)
+        for i in T:
+            value[i] += edge_val_sum[i] + node_vals[i]
+        return value
+        
     def __call__(self, coverage=1, maxit = sys.maxint, callback=None, nocc=False,
                  star=True, uisim=False, single = False):
         B = defaultdict(lambda : defaultdict(lambda : 0))

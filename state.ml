@@ -6,7 +6,7 @@
 * Description:  
 * Author:       Staal Vinterbo
 * Created:      Sat Nov  5 17:37:37 2011
-* Modified:     Sun Nov  6 16:23:05 2011 (Staal Vinterbo) staal@mats
+* Modified:     Sat Oct 10 19:22:43 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 * Language:     caml
 * Package:      N/A
 * Status:       Experimental
@@ -27,6 +27,13 @@
 *
 * (c) Copyright 2011, Staal Vinterbo, all rights reserved.
 *
+********************************************************************************
+*
+* Revisions:
+*
+* Sat Oct 10 19:21:36 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
+*  updated to batteries 2, List.sort's ~cmp is no longer optional, and 
+*  -| is now %.
 ********************************************************************************
 *)
 
@@ -81,7 +88,7 @@ let h_update h ((s, u),(q, l, ss)) =
     None -> begin Hashtbl.add h (s, u) (q, l, ss); h end
   | Some (q',l', s') -> begin if (q > q') then Hashtbl.replace h (s,u) (q,l,ss); h end;;
 let h_items (n,m,k) = Hashtbl.enum;; (* all key,value pairs *)
-let h_values x = Enum.map snd -| (h_items x) ;; (* all the values, without keys *)
+let h_values x = Enum.map snd % (h_items x) ;; (* all the values, without keys *)
 let h_estimate_size (n,m,k) = (max_size 1 m k);;
 let h_create (n,m,k) store =  Hashtbl.create (h_estimate_size (n,m,k));;
 let h_refresh (n,m,k) table = Hashtbl.create (h_estimate_size (n,m,k));; (* create a new store *)
@@ -115,7 +122,7 @@ let t_items (n,m,k) h =
         0. -> None
       | _ -> Some (key, (q,l,ss)))
     [? ((s,u), h.(s-1).(u)) | s <- List : colorsets m k; u <- 0 --^ n ?];;
-let t_values x = Enum.map snd -| (t_items x) ;;
+let t_values x = Enum.map snd % (t_items x) ;;
 let t_estimate_size (n,m,k) = (max_size n m k);;
 let t_refresh (n,m,k) table = table;;
 let t_create (n, m, k) store =
@@ -236,8 +243,8 @@ let boundsarray amatrix wmatrix tree =
   let teidxs = List.map (uncurry ei1) tpairs in
   let widxs = product teidxs [? List : x | x <- 0 --^ (Array.length wmatrix.(0)) ?] and
       aidxs = product tnodes [? List : x | x <- 0 --^ n ?] in
-  let wvals = List.take k (List.sort ~cmp:(fun x y -> compare y x) (List.map (fun (i,j) -> wmatrix.(i).(j)) widxs)) and
-      avals = List.take k (List.sort ~cmp:(fun x y -> compare y x) (List.map (fun (i,j) -> amatrix.(i).(j)) aidxs)) in
+  let wvals = List.take k (List.sort (fun x y -> compare y x) (List.map (fun (i,j) -> wmatrix.(i).(j)) widxs)) and
+      avals = List.take k (List.sort (fun x y -> compare y x) (List.map (fun (i,j) -> amatrix.(i).(j)) aidxs)) in
   let tmp = addflp wvals avals in
   Array.rev (cumsum (+.) 0. (0.::tmp));;
 
@@ -293,7 +300,7 @@ let make_w2 amatrix wmatrix =
 let flip f x y = f y x;;
 let boundsarray2 gedges tedges gnodes tnodes v w =
   let k = List.length tnodes in
-  let taketop l = List.take k (List.sort ~cmp:(flip compare) l) in 
+  let taketop l = List.take k (List.sort (flip compare) l) in 
   let avals =
     taketop [? List: v t u | t <- List: tnodes; u <- List: gnodes ?] and
       wvals =

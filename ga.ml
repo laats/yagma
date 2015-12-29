@@ -6,7 +6,7 @@
 * Description:  Genetic algorithm for the assignment problem
 * Author:       Staal Vinterbo
 * Created:      Sun Oct 30 19:58:02 2011
-* Modified:     Sun Oct 30 19:59:10 2011 (Staal Vinterbo) staal@mats
+* Modified:     Sat Oct 10 19:20:19 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 * Language:     caml
 * Package:      yagma
 * Status:       Experimental
@@ -28,10 +28,18 @@
 * (c) Copyright 2011, Staal Vinterbo, all rights reserved.
 *
 ********************************************************************************
+*
+* Revisions:
+*
+* Sat Oct 10 19:18:42 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
+*  Removed Std as it is removed from Batteries. Also changed code to reflect 
+*  change of List.sort's optional cmp parameter to required.
+********************************************************************************
 *)
 
 open Batteries;;
-open Std;;
+
+(* open Std;;*)
 (* ----------------- Ugly Genetic algorithm code --------------- *)
 
 type indt = float * int array;;
@@ -111,18 +119,18 @@ let mix a' b' =
       aback = backedges a and
       bback = backedges b and 
       start = ref 0 in
-  while !start <> -1 & not used.(!start) do
+  while !start <> -1 && not used.(!start) do
     let (there,back) = if (Random.float 1.0) > 0.5 
       then (a, bback) else (b, aback) and
         x = ref !start
     in
-    while !x <> -1 & not used.(!x) do
+    while !x <> -1 && not used.(!x) do
       mixed.(!x) <- there.(!x);
       used.(!x) <- true;
       x := if Hashtbl.mem back there.(!x) then
           Hashtbl.find back there.(!x) else -1
     done;
-    while !start < alen & used.(!start) do start := !start + 1 done;
+    while !start < alen && used.(!start) do start := !start + 1 done;
     if !start = alen then start := -1
   done;
   permute mixed (invperm perm);;
@@ -135,7 +143,8 @@ let asample k a = atake k (Random.shuffle (Array.enum a));;
 let sus (randval:float) (n:int) (pop:popt) =
   let sw = List.fold_left (+.)  0.0 (List.map fst pop) in
   let inc = sw/.(float n) in
-  let pairs = List.rev (List.sort ~cmp:Pervasives.compare pop) in
+  (*let pairs = List.rev (List.sort ~cmp:Pervasives.compare pop) in*)
+  let pairs = List.rev (List.sort Pervasives.compare pop) in   
   let rec next p t i = match p with
       [] -> failwith "sus panic"
     | ((xw,x)::xs) ->
@@ -159,7 +168,8 @@ let makemut (fitness:fitt) (ri:unit -> indt) =
 
 (* quick and blah shuffle of lists... *)
 let blahshuffle l =
-  let cmp _ _ = (Random.int 2) * 2 - 1 in List.sort ~cmp:cmp l;;
+  let cmp _ _ = (Random.int 2) * 2 - 1 in List.sort cmp l;;
+(*let cmp _ _ = (Random.int 2) * 2 - 1 in List.sort ~cmp:cmp l;;  *)
 
 (* sample a quarter of the population to be parents and mate them,
    return list of offspring *)
@@ -200,7 +210,7 @@ let initpop ri n =
 let generation (xo:indt->indt->indt list) (mut:indt->indt) (diversify:popt->popt) (div:int) (pop:popt) =
   let ox = crossover xo pop and
       om = mutate mut div pop in
-  let cand = List.rev (List.sort (diversify (List.concat [om ; ox ; pop]))) in
+  let cand = List.rev (List.sort Pervasives.compare (diversify (List.concat [om ; ox ; pop]))) in
   (List.hd cand) :: (sus (Random.float 1.) ((List.length pop) - 1) cand) ;;
 
 (* run the algorithm, using a function gen : pop -> newpop.

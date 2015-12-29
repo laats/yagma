@@ -6,7 +6,7 @@
 # Description:  The documentation of the yagma module
 # Author:       Staal Vinterbo
 # Created:      Thu Jul 14 14:59:17 2011
-# Modified:     Sun Mar 15 22:46:43 2015 (Staal Vinterbo) staal@mats.gateway.pace.com
+# Modified:     Sat Oct 10 20:18:50 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -1664,7 +1664,7 @@ References
 module = 'yagma'
 script = 'yagm.py'
 url = "http://laats.github.io/sw/yagma/"
-version = '1.24'
+version = '1.25'
 
 docstring = __doc__ % {'prog': module, 'script' : script,
                                'url': url, 'version' : version }

@@ -5,7 +5,7 @@
 # Description:  Gnu make makefile for yagma
 # Author:       Staal Vinterbo
 # Created:      Sun Jul 31 14:27:49 2011
-# Modified:     Fri May 10 03:54:41 2013 (Staal Vinterbo) staal@mats
+# Modified:     Tue Oct 13 11:23:16 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     BSDmakefile
 # Package:      N/A
 # Status:       Experimental
@@ -29,7 +29,7 @@
 ################################################################################
 
 SRCDIR = ./pysource
-BINSTALLDIR = /usr/local/bin
+BINSTALLDIR = $(HOME)/bin
 
 
 PSRC = $(SRCDIR)/*.py yagm.py setup.py
@@ -47,7 +47,7 @@ else
 endif
 
 INSTALL = install
-PINSTALL = easy_install
+PINSTALL = pip install
 
 OSRC = utils.ml utils.mli tree.ml tree.mli state.ml state.mli ga.ml ga.mli yagmproto.ml
 YAGMCMX = utils.cmx tree.cmx ga.cmx state.cmx ga.cmx
@@ -56,7 +56,9 @@ OCAMLOPT = ocamlopt
 OCAMLC = ocamlc
 OCAMLDEP = ocamldep
 
-PACKFLAGS = -package batteries,batteries.pa_comprehension.syntax -syntax camlp4o
+#PACKFLAGS = -package batteries,batteries.pa_comprehension.syntax -syntax camlp4o
+PACKFLAGS = -package batteries,pa_comprehension -syntax camlp4o
+#PACKFLAGS = -package batteries -syntax camlp4o
 OFLAGS = -thread $(PACKFLAGS) 
 OPTFLAGS = -unsafe -inline 5 -ccopt -O3 
 DEBFLAGS = -g
@@ -68,6 +70,7 @@ options:
 	@echo 'targets are: builds sdist egg html pdf paper readme yagm install dist love'
 	@echo 'to build and install do: make builds; sudo make install'
 	@echo 'to see what each target does, do: make -n target'
+
 
 .ml.cmo:
 	ocamlfind $(OCAMLC) $(OFLAGS) $(DEBFLAGS) -c $<
@@ -138,13 +141,13 @@ paper: yagma.tex
 	@pdflatex --interaction nonstopmode "\input" yagma-paper.tex
 	@echo "Created files yagma-paper.tex and yagma-paper.pdf."
 
-install.egg:
-	$(PINSTALL) `ls -t dist/yagma-*.egg | head -1`
+install.python: sdist
+	$(PINSTALL) --upgrade `ls -t dist/yagma-*.tar.gz | head -1`
 
 install.ocaml: yagm
 	$(INSTALL) yagm $(BINSTALLDIR) 
 
-install: install.egg install.ocaml
+install: install.python install.ocaml
 
 dist: html sdist egg pdf paper
 	rm -f dist/index.html

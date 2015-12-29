@@ -93,7 +93,7 @@ let readmatrix file =
 
 
 (* print a comma separated matrix *)
-let fprint fmt stream x = IO.printf stream fmt x;;
+let fprint fmt stream x = Printf.fprintf stream fmt x;;
 let printmatrix ?stream:(stream=IO.stdout) fmt matrix =
   Array.iter (fun a ->
     Array.print ~first:"" ~sep:"," ~last:"\n" (fprint fmt) stream a) matrix;;

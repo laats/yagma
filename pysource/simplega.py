@@ -7,7 +7,7 @@
 #               between two sets.
 # Author:       Staal Vinterbo
 # Created:      Mon May 18 11:17:09 2009
-# Modified:     Wed Jul 20 15:33:07 2011 (Staal Vinterbo) staal@dink
+# Modified:     Fri Oct 16 23:33:24 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -250,23 +250,25 @@ if __name__ == "__main__":
 
 #########
     
-def gaalign(G1, G2, check):
+def gaalign(G1, G2, check, psize=64):
     '''use a genetic algorithm to find a vertex assignment.'''
     #if type(G1) == type(nx.DiGraph()):
     #    warning('The GA algorithm is not designed for directed graphs...')
     transinv1 = dict(enumerate(sorted(G1)))
     trans1 = dict((b,a) for a,b in transinv1.items())
     GG = type(G1)()
+    GG.add_nodes_from((trans1[a], d) for (a, d) in G1.nodes(data=True))
     GG.add_edges_from((trans1[a], trans1[b], w) for a,b,w in G1.edges(data=True))
-    GG.add_nodes_from((n, G1.node[transinv1[n]]) for n in GG)
+    #GG.add_nodes_from((n, G1.node[transinv1[n]]) for n in GG)
     transinv2 = dict(enumerate(sorted(G2)))
     trans2 = dict((b,a) for a,b in transinv2.items())
     GG2 = type(G2)()
+    GG2.add_nodes_from((trans2[a], d) for (a, d) in G2.nodes(data=True))
     GG2.add_edges_from((trans2[a], trans2[b], w) for a,b,w in G2.edges(data=True))
-    GG2.add_nodes_from((n, G2.node[transinv2[n]]) for n in GG2)    
+    #GG2.add_nodes_from((n, G2.node[transinv2[n]]) for n in GG2)    
     debug('creating ga...')
     fitness = lambda a : check(GG, GG2, dict(enumerate(a))) 
-    ga = sga(fitness, len(GG), len(GG2), 64)
+    ga = sga(fitness, len(GG), len(GG2), psize)
     info('Running GA...')
     assi = ga.run(delay=300, method=1, mdiv=10)[1]
     debug('translating result....' + str(assi))

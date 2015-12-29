@@ -5,7 +5,7 @@
 # Description:  
 # Author:       Staal Vinterbo
 # Created:      Thu Jun  7 18:27:56 2007
-# Modified:     Wed Oct  5 12:11:23 2011 (Staal Vinterbo) staal@dink
+# Modified:     Sat Oct 10 20:24:45 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      sssm
 # Status:       Experimental
@@ -41,8 +41,8 @@ Operating System :: POSIX
 Environment :: Console
 """
 
-#from distutils.core import setup
-from setuptools import setup
+from distutils.core import setup
+#from setuptools import setup
 
 
 import pysource.docstring as docstring
@@ -69,7 +69,6 @@ setup(name=pname,
       long_description = "\n".join(doclines[2:]),
       package_dir = {pname:'./pysource'},
       packages = [pname],
-      install_requires = ['setuptools',
-                          'munkres>=1.0.5', 'networkx>=1.5'],
+      install_requires = ['numpy', 'munkres>=1.0.5', 'networkx>=1.5'],
       scripts=['./' + scriptname]
       )

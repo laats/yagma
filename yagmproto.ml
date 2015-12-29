@@ -110,18 +110,19 @@ let treematch ?bound:(bound=0.0) state tree =
   in
   let ilist = ielist tree in
   let (score, l) = Enum.fold (trial ilist) (bound, []) (0 --^ state.times) in
-  (score, List.map (state.make_assignment -| List.rev) l);;
+  (score, List.map (state.make_assignment % List.rev) l);;
 
 
 (* Yagma algorithm ********************* *)
 
 (* -------- GA Fitness Function ------- *)
-
+module IntMap = Map.Make(struct type t = int let compare = compare end);;
+  
 let ascore v w tedges tnodes ind =
   try 
     let l = [? List : (a,b) | (a,b) <- List : (List.map2 (fun x y -> (x,y)) tnodes (Array.to_list ind)) ?] in
-    let lmap = Map.IntMap.of_enum [? (a,b) | (a,b) <- List: l ?] in
-    let fl i = Map.IntMap.find i lmap in
+    let lmap = IntMap.of_enum [? (a,b) | (a,b) <- List: l ?] in
+    let fl i = IntMap.find i lmap in
     let ascore = List.fold_left (+.) 0.0 (List.map (uncurry v) l) and
 	wscore = List.fold_left (+.) 0.0 (List.map (fun (a,b) -> w (a, fl a) (b, fl b)) tedges) in
     ascore +. wscore
@@ -171,7 +172,7 @@ let graphmatch ?verbose:(verbose=false) ?gbound:(gbound=false) ?mode:(mode=Simil
 
 (* -------------------------- Program entry point ------------------------ *)
 					      
-let version = "1.35";;
+let version = "1.36";;
 let main() = 
   flush stderr;
   let eps = ref 0.2 and
@@ -186,7 +187,7 @@ let main() =
       file3 = ref "" and
       files = ref [] and
       usage = (Sys.argv.(0) ^ " version " ^ version ^
-                 ". (c) 2011 Staal A. Vinterbo.\n" ^
+                 ". (c) 2011-2015 Staal A. Vinterbo.\n" ^
 	       "usage: " ^ Sys.argv.(0) ^
                " [-e FLOAT] [-s INT] [-b FLOAT] [-v] [-g] TFILE AFILE WFILE") in
   let speclist = [ ("-e", Arg.Float  (fun ein -> eps := ein),

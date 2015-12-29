@@ -6,7 +6,7 @@
 # Description:  Graph matching by color coding
 # Author:       Staal Vinterbo
 # Created:      Tue Jul 12 14:24:45 2011
-# Modified:     Mon Jul 18 18:49:30 2011 (Staal Vinterbo) staal@dink
+# Modified:     Tue Oct 13 12:14:05 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -31,7 +31,12 @@
 '''Graph matching by color coding'''
 import graphmatch
 import docstring
-from graphmatch import *
+import external
+import vf2
+
 from simplega import gaalign
-__all__ = graphmatch.__all__ + ['gaalign']
+__all__ = graphmatch.__all__ + external.__all__ + vf2.__all__ + ['gaalign']
 __doc__ = docstring.docstring
+from external import *
+from vf2 import *
+from graphmatch import *
