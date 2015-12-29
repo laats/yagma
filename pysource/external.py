@@ -6,7 +6,7 @@
 # Description:  Routines for communicating with external yagm program.
 # Author:       Staal Vinterbo
 # Created:      Tue Oct 13 11:14:31 2015
-# Modified:     Tue Dec 29 10:42:13 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
+# Modified:     Tue Dec 29 10:56:16 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -119,6 +119,9 @@ def external(G1, G2, trees, eps = 0.2, gabound = False, program = 'yagm', seed =
     fd0, f0 = tempfile.mkstemp(text=True)
     fd1, f1 = tempfile.mkstemp(text=True)    
     fd2, f2 = tempfile.mkstemp(text=True)
+    fd0 = os.fdopen(fd0, 'w')
+    fd1 = os.fdopen(fd1, 'w')
+    fd2 = os.fdopen(fd2, 'w')    
     
     #fd0 = open(f0, 'w')
     
