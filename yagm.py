@@ -7,7 +7,7 @@
 #               based approach for the assignment problem.
 # Author:       Staal Vinterbo
 # Created:      Fri Jun 10 14:31:48 2011
-# Modified:     Tue Oct 13 18:45:05 2015 (Staal Vinterbo) staal@klump.gateway.pace.com
+# Modified:     Fri Apr 22 11:21:25 2016 (Staal Vinterbo) staal@klump.gateway.pace.com
 # Language:     Python
 # Package:      N/A
 # Status:       Experimental
@@ -551,18 +551,18 @@ if __name__ == "__main__":
 
     formats = {'graphml': graphmlread,
                'pajek': nx.read_pajek,
-               'dot': nx.read_dot,
+               #'dot': nx.read_dot,
                'edgelist' : nx.read_weighted_edgelist,
                'amat' : adjmatread}
 
     wformats = {'graphml': nx.write_graphml,
                'pajek': nx.write_pajek,
-               'dot': nx.write_dot,
+               #'dot': nx.write_dot,
                'edgelist' : nx.write_weighted_edgelist,
                 'amat' : write_adjmat}
 
     from optparse import OptionParser
-    Version = 1.72357
+    Version = 2.71
     parser = OptionParser(usage = "".join(
         ["%prog [options] URL1 URL2\n",
          "\n Version: ", str(Version), " SAV (C) 2011\n",
